@@ -32,8 +32,7 @@
   nav.tabs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
     margin:22px 0 26px;position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:5;}
   nav.tabs button{border:1px solid var(--line);background:var(--card);color:var(--ink);
-    padding:9px 15px;border-radius:10px;font-size:.92rem;font-weight:600;cursor:pointer;
-    transition:.15s;}
+    padding:9px 15px;border-radius:10px;font-size:.9rem;font-weight:600;cursor:pointer;transition:.15s;}
   nav.tabs button:hover{border-color:var(--accent);}
   nav.tabs button.active{background:var(--accent);color:#fff;border-color:var(--accent);}
   section.panel{display:none;animation:fade .25s ease;}
@@ -45,17 +44,16 @@
   .card p{margin:.5em 0;color:var(--ink);}
   .muted{color:var(--muted);}
   .accordion h3{cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;}
-  .accordion .body{max-height:0;overflow:hidden;transition:max-height .3s ease;}
-  .accordion.open .body{max-height:1400px;}
+  .accordion .body{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+  .accordion.open .body{max-height:2200px;}
   .accordion .chev{transition:.25s;color:var(--accent);font-weight:700;}
   .accordion.open .chev{transform:rotate(90deg);}
   .pill{display:inline-block;background:var(--accent-soft);color:var(--accent);
     padding:2px 9px;border-radius:7px;font-size:.82rem;font-weight:600;margin-right:6px;}
   code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    background:var(--accent-soft);padding:1px 6px;border-radius:6px;font-size:.92em;}
+    background:var(--accent-soft);padding:1px 6px;border-radius:6px;font-size:.9em;}
   .tip{background:var(--ok-soft);border-left:4px solid var(--ok);padding:10px 14px;border-radius:8px;margin:12px 0;}
   .warn{background:var(--bad-soft);border-left:4px solid var(--bad);padding:10px 14px;border-radius:8px;margin:12px 0;}
-  /* Quiz */
   .qmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px;}
   .qmeta .score{font-weight:700;}
   .bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:6px 0 4px;}
@@ -70,9 +68,9 @@
   .btn{background:var(--accent);color:#fff;border:none;padding:11px 18px;border-radius:10px;
     font-weight:600;cursor:pointer;font-size:.95rem;}
   .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);}
-  .btn:disabled{opacity:.5;cursor:default;}
   .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
-  /* Simulator */
+  .tag{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:6px;
+    background:var(--accent-soft);color:var(--accent);margin-bottom:6px;}
   table.games{width:100%;border-collapse:collapse;margin:10px 0;font-size:.92rem;}
   table.games th,table.games td{border:1px solid var(--line);padding:7px 8px;text-align:center;}
   table.games th{background:var(--accent-soft);color:var(--accent);font-weight:600;}
@@ -85,8 +83,10 @@
   .steplog div{padding:5px 0;border-bottom:1px dashed var(--line);}
   .final{font-size:1.05rem;font-weight:700;padding:12px 14px;border-radius:10px;background:var(--ok-soft);color:var(--ok);margin-top:10px;}
   .footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:40px;}
-  ul.plain{margin:.4em 0;padding-left:1.2em;}
-  ul.plain li{margin:.35em 0;}
+  .filterow{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
+  .filterow button{font-size:.8rem;padding:5px 10px;border-radius:8px;border:1px solid var(--line);
+    background:var(--card);color:var(--ink);cursor:pointer;font-weight:600;}
+  .filterow button.on{background:var(--accent);color:#fff;border-color:var(--accent);}
 </style>
 </head>
 <body>
@@ -94,25 +94,30 @@
   <header class="hero">
     <span class="badge">Capítulo 3 · A Formal Learning Model</span>
     <h1>Práctica — Teoría de la Generalización</h1>
-    <p>PAC, ERM, riesgo, modelo agnóstico y predictor de Bayes, en cristiano.</p>
+    <p>PAC, ERM, riesgo, modelo agnóstico y predictor de Bayes — con los 5 ejercicios (1, 2, 4, 6, 7).</p>
   </header>
 
   <nav class="tabs">
     <button data-tab="conceptos" class="active">📘 Conceptos</button>
+    <button data-tab="ejercicios">📝 Ejercicios</button>
     <button data-tab="quiz">✅ Quiz</button>
     <button data-tab="sim">🧪 Simulador ERM</button>
-    <button data-tab="errores">⚠️ Errores comunes</button>
+    <button data-tab="errores">⚠️ Errores</button>
   </nav>
 
-  <!-- ===================== CONCEPTOS ===================== -->
+  <!-- CONCEPTOS -->
   <section id="conceptos" class="panel active">
-    <div class="card">
-      <p class="muted">Toca cada concepto para desplegarlo. Ejemplo fijo en todo: adivinar si una <b>papaya</b> está rica (1) o no (0), o si un <b>videojuego</b> te va a gustar.</p>
-    </div>
+    <div class="card"><p class="muted">Toca cada concepto para desplegarlo. Ejemplo fijo: adivinar si una <b>papaya</b> está rica (1) o no (0), o si un <b>videojuego</b> te gustará.</p></div>
     <div id="conceptList"></div>
   </section>
 
-  <!-- ===================== QUIZ ===================== -->
+  <!-- EJERCICIOS -->
+  <section id="ejercicios" class="panel">
+    <div class="card"><p class="muted">Los 5 ejercicios de la Sección 3.5, con enunciado traducido a lenguaje sencillo e idea de solución. Toca cada uno.</p></div>
+    <div id="ejList"></div>
+  </section>
+
+  <!-- QUIZ -->
   <section id="quiz" class="panel">
     <div class="card">
       <div class="qmeta">
@@ -120,23 +125,31 @@
         <span class="muted" id="progLbl"></span>
       </div>
       <div class="bar"><i id="progBar"></i></div>
+      <div class="filterow" style="margin-top:10px">
+        <span class="muted" style="align-self:center;font-size:.85rem;margin-right:4px">Filtrar:</span>
+        <button data-f="all" class="on">Todo</button>
+        <button data-f="Conceptos">Conceptos</button>
+        <button data-f="Ej.1">Ej.1</button>
+        <button data-f="Ej.2">Ej.2</button>
+        <button data-f="Ej.4">Ej.4</button>
+        <button data-f="Ej.6">Ej.6</button>
+        <button data-f="Ej.7">Ej.7</button>
+      </div>
     </div>
     <div id="quizList"></div>
     <div class="card row" style="justify-content:space-between">
-      <span class="muted" id="finalMsg">Responde todas para ver tu resultado.</span>
-      <button class="btn ghost" id="resetQuiz">🔄 Reiniciar quiz</button>
+      <span class="muted" id="finalMsg">Responde para ver tu resultado.</span>
+      <button class="btn ghost" id="resetQuiz">🔄 Reiniciar</button>
     </div>
   </section>
 
-  <!-- ===================== SIMULADOR ===================== -->
+  <!-- SIMULADOR -->
   <section id="sim" class="panel">
     <div class="card">
-      <h3>Simulador: algoritmo de eliminación (ERM para conjunciones)</h3>
-      <p class="muted">Cada juego tiene 3 características (sí/no) y una etiqueta (te gustó o no). El algoritmo empieza con la regla más exigente (todos los literales) y va <b>borrando</b> los que estorban con cada juego que te <b>gustó</b>. Los que no te gustaron se ignoran.</p>
+      <h3>Simulador: algoritmo de eliminación (ERM para conjunciones — Ej. 4)</h3>
+      <p class="muted">Cada juego tiene 3 características (sí/no) y una etiqueta. El algoritmo empieza con la regla más exigente (todos los literales) y va <b>borrando</b> los que estorban con cada juego que te <b>gustó</b>. Los que no te gustaron se ignoran.</p>
       <table class="games" id="gamesTbl">
-        <thead><tr>
-          <th>#</th><th>Multijugador</th><th>Gratis</th><th>Acción</th><th>¿Te gustó?</th><th></th>
-        </tr></thead>
+        <thead><tr><th>#</th><th>Multijugador</th><th>Gratis</th><th>Acción</th><th>¿Te gustó?</th><th></th></tr></thead>
         <tbody id="gamesBody"></tbody>
       </table>
       <div class="row">
@@ -153,9 +166,9 @@
     </div>
   </section>
 
-  <!-- ===================== ERRORES ===================== -->
+  <!-- ERRORES -->
   <section id="errores" class="panel">
-    <div class="card"><p class="muted">Estas son las trampas donde es más fácil resbalarse. Toca cada tarjeta para ver la corrección.</p></div>
+    <div class="card"><p class="muted">Las trampas donde es más fácil resbalarse. Toca cada tarjeta para ver la corrección.</p></div>
     <div id="errList"></div>
   </section>
 
@@ -163,7 +176,7 @@
 </div>
 
 <script>
-/* ---------------- TABS ---------------- */
+/* TABS */
 document.querySelectorAll('nav.tabs button').forEach(b=>{
   b.addEventListener('click',()=>{
     document.querySelectorAll('nav.tabs button').forEach(x=>x.classList.remove('active'));
@@ -174,124 +187,137 @@ document.querySelectorAll('nav.tabs button').forEach(b=>{
   });
 });
 
-/* ---------------- CONCEPTOS ---------------- */
+/* CONCEPTOS */
 const CONCEPTOS=[
+  {t:"★ Supuestos del modelo: i.i.d. y realizabilidad",
+   h:`<b>i.i.d.:</b> suponemos que cada dato de la muestra se saca de forma <b>independiente</b> y todos de la <b>misma</b> distribución D. Eso es lo que hace que la muestra sea "representativa" del mundo y que el error empírico se parezca al verdadero.<br>
+   <b>Realizabilidad:</b> suponemos que existe una regla en H con error verdadero 0 (una regla perfecta). Es el supuesto del modelo PAC "básico"; el modelo <b>agnóstico</b> lo suelta.`},
   {t:"1 · El montaje: qué es \"aprender\"",
-   h:`Quieres una <b>regla (hipótesis h)</b> que, mirando un dato (una papaya, un juego), prediga 0 o 1.
+   h:`Quieres una <b>regla (hipótesis h)</b> que, mirando un dato, prediga 0 o 1.
    Hay un <b>generador del mundo D</b> que decide qué datos aparecen, con qué frecuencia y su etiqueta — y <b>no lo conoces</b>.
    Ves una <b>muestra S</b> (datos ya etiquetados) y tu meta es <b>generalizar</b>: acertar en datos <i>nuevos</i>, no solo en los que ya viste.`},
   {t:"2 · Los dos errores",
-   h:`<span class="pill">Riesgo verdadero L_D(h)</span> qué tan seguido falla en <b>todo el mundo real</b>. Es lo que importa, pero <b>no se puede calcular</b> (no conocemos D).<br>
-   <span class="pill">Riesgo empírico L_S(h)</span> la fracción de errores en <b>tu muestra</b>. Este <b>sí</b> se calcula: cuentas errores y divides.<br>
-   Idea central del curso: usar el que sí puedes medir (empírico) para controlar el que importa (verdadero).`},
+   h:`<span class="pill">Riesgo verdadero L_D(h)</span> qué tan seguido falla en <b>todo el mundo real</b>. Es lo que importa, pero <b>no se puede calcular</b> (no conoces D).<br>
+   <span class="pill">Riesgo empírico L_S(h)</span> la fracción de errores en <b>tu muestra</b>. Este <b>sí</b>: cuentas errores y divides.<br>
+   Idea central: usar el que sí puedes medir (empírico) para controlar el que importa (verdadero).`},
   {t:"3 · ERM y el sobreajuste",
    h:`<b>ERM</b> = elegir la regla con <b>menor error empírico</b>, pero <b>dentro de una bolsa H</b> fijada de antemano.<br>
-   <b>Sobreajuste</b>: si pudieras usar <i>cualquier</i> regla, una tramposa memorizaría la muestra (0 errores ahí) y sería inútil con datos nuevos.
-   Por eso se <b>restringe a H</b>: eso hace que el error empírico sea un estimador confiable del verdadero.`},
+   <b>Sobreajuste:</b> con cualquier regla, una tramposa memorizaría la muestra (0 errores ahí) y sería inútil con datos nuevos.
+   Por eso se <b>restringe a H</b>: eso hace del error empírico un estimador confiable del verdadero.`},
   {t:"4 · PAC (realizable) + complejidad muestral",
    h:`<b>Realizable</b> = existe una regla perfecta en H (error 0 posible).<br>
    <span class="pill">ε</span> precisión (cuánto error tolero) &nbsp; <span class="pill">δ</span> confianza (prob. de mala suerte).<br>
    <b>Promesa PAC:</b> con probabilidad ≥ 1−δ, la regla que aprendo tiene error ≤ ε. <i>(Probably = δ, Approximately = ε.)</i><br>
    <b>Complejidad muestral</b> (clase finita): <code>m ≥ (ln|H| + ln(1/δ)) / ε</code>. Más precisión o más confianza → más datos; bolsa más grande → un poco más (entra como <b>logaritmo</b>).`},
   {t:"5 · PAC agnóstico",
-   h:`<b>Agnóstico</b> = ya no asumimos que exista regla perfecta (el mundo tiene ruido).<br>
-   Meta nueva: quedar <b>casi tan bien como la mejor regla de H</b>.<br>
+   h:`<b>Agnóstico</b> = ya no asumimos regla perfecta (el mundo tiene ruido).<br>
+   Meta: quedar <b>casi tan bien como la mejor regla de H</b>.<br>
    <b>Promesa agnóstica:</b> con prob. ≥ 1−δ, error ≤ <code>min<sub>h∈H</sub> L_D(h) + ε</code>.<br>
-   Realizable es un <b>caso particular</b>: si hay regla perfecta, el "mejor de H" = 0, y la promesa se vuelve error ≤ ε.`},
+   Realizable es un <b>caso particular</b>: si hay regla perfecta, "el mejor de H" = 0, y la promesa se vuelve error ≤ ε.`},
   {t:"6 · Predictor óptimo de Bayes",
-   h:`Para cada dato x, <b>apuesta a la etiqueta más probable</b>: <code>f_D(x)=1 si P(y=1|x) ≥ 1/2</code>, si no 0. Es imposible de superar.<br>
+   h:`Con <code>η(x)=P(Y=1|X=x)</code>, para cada dato <b>apuesta a la etiqueta más probable</b>: <code>f_D(x)=1 si η(x) ≥ 1/2</code>, si no 0. Es imposible de superar.<br>
    Su error (<b>riesgo de Bayes</b>) puede ser <b>&gt; 0</b> por el <b>ruido</b> (dos datos idénticos con distinta etiqueta).<br>
-   Dos récords distintos: <b>Bayes</b> = el mejor de <i>todas</i> las reglas del universo; <b>min<sub>h∈H</sub></b> = el mejor <i>dentro de tu bolsa H</i>. Siempre <b>Bayes ≤ min<sub>H</sub></b>.`}
+   Dos récords: <b>Bayes</b> = el mejor de <i>todas</i> las reglas; <b>min<sub>h∈H</sub></b> = el mejor <i>dentro de H</i>. Siempre <b>Bayes ≤ min<sub>H</sub></b>.`}
 ];
 const cl=document.getElementById('conceptList');
-CONCEPTOS.forEach(c=>{
-  const d=document.createElement('div');
-  d.className='card accordion';
-  d.innerHTML=`<h3>${c.t}<span class="chev">▶</span></h3><div class="body"><p>${c.h}</p></div>`;
+CONCEPTOS.forEach((c,i)=>{
+  const d=document.createElement('div');d.className='card accordion';
+  d.innerHTML='<h3>'+c.t+'<span class="chev">▶</span></h3><div class="body"><p>'+c.h+'</p></div>';
   d.querySelector('h3').addEventListener('click',()=>d.classList.toggle('open'));
   cl.appendChild(d);
 });
-document.querySelector('#conceptList .accordion').classList.add('open');
+document.querySelectorAll('#conceptList .accordion')[1].classList.add('open');
 
-/* ---------------- QUIZ ---------------- */
-const QUIZ=[
- {q:"¿Cuál de los dos errores SÍ puedes calcular con tu muestra?",
-  o:["El riesgo empírico L_S(h)","El riesgo verdadero L_D(h)","Los dos por igual","Ninguno"],c:0,
-  e:"El empírico: cuentas los errores en tus datos y divides. El verdadero no, porque no conoces D."},
- {q:"¿Por qué NO puedes calcular el riesgo verdadero L_D(h)?",
-  o:["Porque no sabemos el tamaño de la población","Porque no conocemos D (las probabilidades del mundo)","Porque la muestra es pequeña","Porque ERM lo prohíbe"],c:1,
-  e:"El obstáculo no es el tamaño, es que no conoces D: qué datos aparecen, con qué frecuencia y su etiqueta."},
- {q:"Probaste 25 papayas y tu regla falló en 4. ¿Cuánto vale L_S(h)?",
-  o:["0.04","0.25","0.16","4"],c:2,
-  e:"4 / 25 = 0.16. Es el error empírico (medido sobre la muestra)."},
- {q:"¿Qué es D exactamente?",
-  o:["El tamaño total de la población","La lista de la muestra","La distribución: qué datos aparecen, con qué frecuencia y su etiqueta","El algoritmo de aprendizaje"],c:2,
-  e:"D es el generador del mundo: incluye las probabilidades, no solo una lista."},
- {q:"¿Qué hace la regla ERM?",
-  o:["Elige la regla con menor error empírico dentro de H","Elige la regla con menor error verdadero","Memoriza la muestra","Prueba todas las reglas del universo"],c:0,
-  e:"ERM = menor error empírico, pero restringido a la bolsa H."},
- {q:"¿Cómo se evita el sobreajuste?",
-  o:["Usando más decimales","Restringiendo las reglas a una bolsa H fija","Aumentando ε","Ignorando la muestra"],c:1,
-  e:"Al no permitir cualquier regla, el error empírico se vuelve estimador confiable del verdadero."},
- {q:"Conjunciones booleanas sobre d = 3 variables: ¿cuántas reglas hay a lo más?",
-  o:["9","6","27","8"],c:2,
-  e:"Cada variable tiene 3 opciones (sí / no / no importa) y hay 3 variables: 3×3×3 = 27."},
- {q:"¿Cuánto vale 3⁵ (conjunciones con d = 5)?",
-  o:["125","243","241","15"],c:1,
-  e:"3×3×3×3×3 = 243. (9 → 27 → 81 → 243.)"},
- {q:"¿Cuál es la promesa PAC (realizable)?",
-  o:["Existe una hipótesis con error 0","Con prob. ≥ 1−δ, la regla que aprendo tiene error ≤ ε","La muestra siempre es buena","El error empírico es 0 siempre"],c:1,
-  e:"Tiene dos partes: la probabilidad (1−δ) y el error (≤ ε). Es sobre la regla que aprendes."},
- {q:"En ε y δ, ¿qué es cuál?",
-  o:["ε = confianza, δ = precisión","ε = precisión, δ = confianza","Ambos son la precisión","Ambos son el tamaño de muestra"],c:1,
-  e:"ε = cuánto error tolero (precisión). δ = probabilidad de mala suerte (confianza = 1−δ)."},
- {q:"¿Qué significa que un problema sea \"realizable\"?",
-  o:["Que existe una regla perfecta dentro de H (error 0 posible)","Que no hay ninguna regla buena","Que la muestra es infinita","Que ε = 0"],c:0,
-  e:"Realizable = hay un h en H con L_D(h) = 0."},
- {q:"¿Qué significa \"agnóstico\"?",
-  o:["Que hay regla perfecta seguro","Que no asumimos regla perfecta; nos comparamos con el mejor de H","Que no usamos muestra","Que ignoramos H"],c:1,
-  e:"Agnóstico = sin supuestos sobre D; la meta es acercarse al mejor de H."},
- {q:"¿Cuál es la promesa del modelo agnóstico?",
-  o:["error ≤ ε","error ≤ min_H L_D(h) + ε","error = 0","error ≤ δ"],c:1,
-  e:"Prometes quedar a lo mucho ε por encima del mejor error alcanzable en H."},
- {q:"¿Por qué realizable es un caso particular del agnóstico?",
-  o:["Porque ε es mayor","Porque cuando hay regla perfecta, min_H = 0 y la promesa agnóstica se vuelve ≤ ε","Porque no hay ruido nunca","Porque H es infinita"],c:1,
-  e:"Metiendo min_H = 0 en '≤ min_H + ε' obtienes '≤ ε', que es la promesa PAC."},
- {q:"¿Qué hace el predictor de Bayes para cada dato x?",
-  o:["Apuesta a la etiqueta más probable (1 si P(y=1|x) ≥ 1/2)","Siempre dice 1","Elige al azar","Copia la muestra"],c:0,
-  e:"Le apuesta a lo más probable en cada x; por eso es imposible de superar."},
- {q:"¿Por qué el error de Bayes puede ser mayor que 0?",
-  o:["Por un error de cálculo","Por el ruido: mismo x puede tener distinta etiqueta","Porque H es pequeña","Porque falta muestra"],c:1,
-  e:"Aunque apuestes óptimo, la fracción menos probable de cada x se pierde inevitablemente."},
- {q:"Entre el riesgo de Bayes y min_H L_D(h), ¿cuál es menor o igual?",
-  o:["min_H siempre","Bayes ≤ min_H","Son siempre iguales","Depende de ε"],c:1,
-  e:"Bayes es el mejor de TODAS las reglas; H es solo un pedazo, así que Bayes ≤ min_H."},
- {q:"En el algoritmo de eliminación, llega un ejemplo positivo con la variable x_i = 1. ¿Qué literal borras?",
-  o:["Borras x_i","Borras ¬x_i","No borras nada","Borras ambos"],c:1,
-  e:"Si el dato tiene x_i = 1, la condición '¬x_i' (que pide 0) queda contradicha → se elimina."},
- {q:"¿Cuál es el tiempo de ejecución del algoritmo de eliminación?",
-  o:["O(3^d)","O(d·m)","O(m²)","O(2^d)"],c:1,
-  e:"Por cada uno de los m ejemplos revisas ~2d literales → O(d·m), polinomial."},
- {q:"Complejidad muestral de las conjunciones booleanas (orden de magnitud):",
-  o:["O((d + ln(1/δ))/ε)","O(3^d/ε)","O(1/ε²)","O(d²·m)"],c:0,
-  e:"Metiendo |H| ≤ 3^d+1 en la fórmula: ln(3^d)=d·ln3 → crece lineal en d."}
+/* EJERCICIOS */
+const EJ=[
+ {n:"Ejercicio 1 — Monotonicidad de la complejidad muestral",
+  b:`<b>Enunciado (traducido):</b> si H es PAC aprendible con complejidad m_H(ε,δ), demuestra que m_H <b>no crece</b> al relajar las exigencias: pedir menos precisión o menos confianza nunca requiere más datos.<br><br>
+  <b>Parte A (en ε):</b> si 0&lt;ε1 ≤ ε2, entonces m_H(ε1,δ) ≥ m_H(ε2,δ).
+  <div class="tip">Una muestra suficientemente grande para lograr error ≤ ε1 <b>también</b> logra error ≤ ε2 (porque ε1 ≤ ε2). Entonces el mínimo de datos para ε2 no puede superar al de ε1.</div>
+  <b>Parte B (en δ):</b> si 0&lt;δ1 ≤ δ2, entonces m_H(ε,δ1) ≥ m_H(ε,δ2).
+  <div class="tip">Si con cierto tamaño la prob. de fallo es ≤ δ1, también es ≤ δ2 (pues δ1 ≤ δ2). Lo que basta para alta confianza, basta para baja confianza.</div>`},
+ {n:"Ejercicio 2 — La clase singleton",
+  b:`<b>Enunciado (traducido):</b> H = { h_z : z∈X } ∪ { h_− }, donde h_z dice 1 solo en el punto z (0 en el resto) y h_− dice 0 siempre. Bajo realizabilidad, el objetivo tiene a lo más <b>un punto positivo</b>. (a) Da un ERM; (b) prueba PAC y acota la muestra.<br><br>
+  <b>(a) Algoritmo ERM:</b> si en la muestra hay algún (x_k, 1) → devuelve h_{x_k}. Si todos son negativos → devuelve h_−.
+  <div class="tip"><b>(b) Prueba:</b> el único fallo es que el objetivo sea h_{z*} con D({z*}) &gt; ε pero z* <b>no aparezca</b> en la muestra. La prob. de no ver z* en m datos es (1−D({z*}))^m ≤ (1−ε)^m ≤ e^{−εm}. Pidiendo e^{−εm} ≤ δ → <b>m ≥ ln(1/δ)/ε</b>. Clave: <b>no depende de |X|</b> (sirve aunque X sea infinito).</div>`},
+ {n:"Ejercicio 4 — Conjunciones booleanas ⭐ (tu punto)",
+  b:`<b>Enunciado (traducido):</b> reglas tipo "condición Y condición Y …" sobre d variables sí/no. Prueba que son PAC aprendibles, acota la muestra y da un ERM rápido (polinomial en d·m).
+  <div class="tip"><b>Idea:</b> hay a lo más <b>3^d + 1</b> reglas (cada variable: sí / no / no importa) → clase <b>finita</b> → PAC con <b>m = O((d + ln(1/δ))/ε)</b>. Algoritmo de <b>eliminación</b>: empieza con todos los literales y borra los que cada positivo contradice. Corre en <b>O(d·m)</b>. Pruébalo en el Simulador 🧪.</div>`},
+ {n:"Ejercicio 6 — De agnóstico a PAC ⭐ (tu punto)",
+  b:`<b>Enunciado (traducido):</b> si H es PAC aprendible agnóstico, entonces también es PAC aprendible (realizable); y el mismo algoritmo A sirve.
+  <div class="tip"><b>Idea:</b> en realizable existe regla perfecta → min_H L_D = 0. La garantía agnóstica (error ≤ min_H + ε) se vuelve error ≤ ε. Como la garantía vale para <b>toda</b> D, vale para las realizables (un caso particular): el <b>mismo</b> A funciona, sin cambios.</div>`},
+ {n:"Ejercicio 7 — Predictor óptimo de Bayes",
+  b:`<b>Enunciado (traducido):</b> con η(x)=P(Y=1|X=x), el predictor de Bayes es f_D(x)=1 si η(x) ≥ 1/2, si no 0. Demuestra que para cualquier clasificador g: L_D(f_D) ≤ L_D(g).
+  <div class="tip"><b>Idea:</b> fija un x. Si g(x)=0 su error condicional es η(x); si g(x)=1 es 1−η(x). El mínimo posible es <b>min{η(x), 1−η(x)}</b>, y f_D elige justo ese (le apuesta a lo más probable). Como vale para cada x, al tomar esperanza sobre X sale L_D(f_D) ≤ L_D(g).</div>`}
 ];
-let order=[],idx=0,answered=0,score=0;
+const ejl=document.getElementById('ejList');
+EJ.forEach(x=>{
+  const d=document.createElement('div');d.className='card accordion';
+  d.innerHTML='<h3><span>'+x.n+'</span><span class="chev">▶</span></h3><div class="body"><div style="margin-top:12px">'+x.b+'</div></div>';
+  d.querySelector('h3').addEventListener('click',()=>d.classList.toggle('open'));
+  ejl.appendChild(d);
+});
+
+/* QUIZ */
+const QUIZ=[
+ {g:"Conceptos",q:"¿Cuál de los dos errores SÍ puedes calcular con tu muestra?",o:["El riesgo empírico L_S(h)","El riesgo verdadero L_D(h)","Los dos por igual","Ninguno"],c:0,e:"El empírico: cuentas errores en tus datos y divides. El verdadero no, porque no conoces D."},
+ {g:"Conceptos",q:"¿Por qué NO puedes calcular el riesgo verdadero L_D(h)?",o:["Porque no sabemos el tamaño de la población","Porque no conocemos D (las probabilidades del mundo)","Porque la muestra es pequeña","Porque ERM lo prohíbe"],c:1,e:"El obstáculo no es el tamaño, es que no conoces D."},
+ {g:"Conceptos",q:"Probaste 25 papayas y tu regla falló en 4. ¿Cuánto vale L_S(h)?",o:["0.04","0.25","0.16","4"],c:2,e:"4/25 = 0.16 (error empírico)."},
+ {g:"Conceptos",q:"¿Qué es D exactamente?",o:["El tamaño total de la población","La lista de la muestra","La distribución: qué datos aparecen, con qué frecuencia y su etiqueta","El algoritmo de aprendizaje"],c:2,e:"D es el generador del mundo: incluye probabilidades, no solo una lista."},
+ {g:"Conceptos",q:"¿Qué hace la regla ERM?",o:["Elige la regla con menor error empírico dentro de H","Elige la de menor error verdadero","Memoriza la muestra","Prueba todas las reglas del universo"],c:0,e:"ERM = menor error empírico, restringido a H."},
+ {g:"Conceptos",q:"¿Cómo se evita el sobreajuste?",o:["Usando más decimales","Restringiendo las reglas a una bolsa H fija","Aumentando ε","Ignorando la muestra"],c:1,e:"Con H fija, el error empírico se vuelve estimador confiable del verdadero."},
+ {g:"Conceptos",q:"¿Qué supuesto hace que la muestra sea representativa del mundo?",o:["Que la muestra sea enorme","Que los datos sean i.i.d. (independientes y de la misma D)","Que H sea finita","Que no haya ruido"],c:1,e:"i.i.d. = independientes e idénticamente distribuidos: por eso la muestra refleja a D."},
+ {g:"Conceptos",q:"¿Cuál es la promesa PAC (realizable)?",o:["Existe una hipótesis con error 0","Con prob. ≥ 1−δ, la regla que aprendo tiene error ≤ ε","La muestra siempre es buena","El error empírico es 0 siempre"],c:1,e:"Dos partes: probabilidad (1−δ) y error (≤ ε). Es sobre la regla que aprendes."},
+ {g:"Conceptos",q:"En ε y δ, ¿qué es cuál?",o:["ε = confianza, δ = precisión","ε = precisión, δ = confianza","Ambos precisión","Ambos tamaño de muestra"],c:1,e:"ε = cuánto error tolero (precisión). δ = prob. de mala suerte (confianza = 1−δ)."},
+ {g:"Conceptos",q:"¿Qué significa \"realizable\"?",o:["Existe una regla perfecta dentro de H (error 0 posible)","No hay ninguna regla buena","La muestra es infinita","ε = 0"],c:0,e:"Realizable = hay h en H con L_D(h)=0."},
+ {g:"Conceptos",q:"¿Qué significa \"agnóstico\"?",o:["Hay regla perfecta seguro","No asumimos regla perfecta; nos comparamos con el mejor de H","No usamos muestra","Ignoramos H"],c:1,e:"Agnóstico = sin supuestos sobre D; meta: acercarse al mejor de H."},
+ {g:"Conceptos",q:"¿Cuál es la promesa del modelo agnóstico?",o:["error ≤ ε","error ≤ min_H L_D(h) + ε","error = 0","error ≤ δ"],c:1,e:"Quedas a lo mucho ε por encima del mejor error alcanzable en H."},
+ {g:"Conceptos",q:"¿Cuál es más chico (mejor)?",o:["min_H L_D(h)","El riesgo de Bayes","Siempre iguales","Depende de ε"],c:1,e:"Bayes es el mejor de TODAS las reglas; H es un pedazo → Bayes ≤ min_H."},
+
+ {g:"Ej.1",q:"Fijando δ, si pides MÁS precisión (ε más pequeño), la muestra necesaria m_H(ε,δ)...",o:["Disminuye","Aumenta o queda igual","No cambia nunca","Se vuelve 0"],c:1,e:"Monótona no creciente en ε: menos ε (más exigente) → más datos."},
+ {g:"Ej.1",q:"Fijando ε, si pides MÁS confianza (δ más pequeño), m_H(ε,δ)...",o:["Aumenta o queda igual","Disminuye","No cambia","Depende de |X|"],c:0,e:"Menos δ (más confianza) → más datos."},
+ {g:"Ej.1",q:"¿Por qué una muestra que sirve para ε1 también sirve para ε2 (con ε1 ≤ ε2)?",o:["Porque ε2 es más grande y error ≤ ε1 ≤ ε2","Porque δ cambia","Porque H crece","No sirve"],c:0,e:"Si el error es ≤ ε1 y ε1 ≤ ε2, automáticamente es ≤ ε2."},
+
+ {g:"Ej.2",q:"En la clase singleton, ¿qué devuelve el ERM si hay un ejemplo (x_k, 1)?",o:["h_−","h_{x_k}","Cualquier h_z","Error"],c:1,e:"Devuelve el singleton que marca ese punto positivo: h_{x_k}."},
+ {g:"Ej.2",q:"En la clase singleton, ¿qué devuelve el ERM si TODOS los ejemplos son negativos?",o:["h_{x_1}","h_− (siempre 0)","No devuelve nada","h_z al azar"],c:1,e:"Sin positivos, la hipótesis todo-cero h_− es consistente."},
+ {g:"Ej.2",q:"¿De qué depende la complejidad muestral de la clase singleton?",o:["Del tamaño |X|","Solo de ε y δ, no de |X|","De 3^d","De la muestra anterior"],c:1,e:"m ≥ ln(1/δ)/ε: no depende de |X| (¡sirve aunque X sea infinito!)."},
+ {g:"Ej.2",q:"En el singleton, ¿cuál es el único fallo posible?",o:["Ver demasiados positivos","Que el punto positivo z* no aparezca en la muestra","Que ε sea grande","Que H sea finita"],c:1,e:"Si no ves z*, devuelves h_− y erras con prob. D({z*})."},
+ {g:"Ej.2",q:"La probabilidad de NO ver z* en m muestras se acota por...",o:["e^{−εm}","1/m","ε·m","1−δ"],c:0,e:"(1−ε)^m ≤ e^{−εm}; pidiendo ≤ δ sale m ≥ ln(1/δ)/ε."},
+
+ {g:"Ej.4",q:"Conjunciones sobre d = 3 variables: ¿cuántas reglas a lo más?",o:["9","6","27","8"],c:2,e:"3 opciones por variable × 3 variables = 3×3×3 = 27."},
+ {g:"Ej.4",q:"¿Cuánto vale 3⁵ (conjunciones con d = 5)?",o:["125","243","241","15"],c:1,e:"3×3×3×3×3 = 243."},
+ {g:"Ej.4",q:"En el algoritmo de eliminación, llega un positivo con la variable x_i = 1. ¿Qué literal borras?",o:["Borras x_i","Borras ¬x_i","No borras nada","Borras ambos"],c:1,e:"x_i=1 contradice la condición '¬x_i' (que pide 0) → se elimina."},
+ {g:"Ej.4",q:"¿Tiempo de ejecución del algoritmo de eliminación?",o:["O(3^d)","O(d·m)","O(m²)","O(2^d)"],c:1,e:"Por cada uno de los m ejemplos revisas ~2d literales → O(d·m)."},
+ {g:"Ej.4",q:"Complejidad muestral de las conjunciones (orden de magnitud):",o:["O((d + ln(1/δ))/ε)","O(3^d/ε)","O(1/ε²)","O(d²·m)"],c:0,e:"Metiendo |H| ≤ 3^d+1: ln(3^d)=d·ln3 → lineal en d."},
+ {g:"Ej.4",q:"¿Por qué la regla aprendida no falla en los ejemplos negativos?",o:["Por suerte","Porque contiene a c* (es al menos tan restrictiva) y c* dice 0 en los negativos","Porque borra negativos","Porque H es infinita"],c:1,e:"Nunca borras literales de c*, así que h ⊇ c*: si h dice 1, c* también; en negativos c* dice 0 → h también."},
+
+ {g:"Ej.6",q:"¿Por qué realizable es un caso particular del agnóstico?",o:["Porque ε es mayor","Porque cuando hay regla perfecta, min_H = 0 y la promesa agnóstica se vuelve ≤ ε","Porque no hay ruido nunca","Porque H es infinita"],c:1,e:"Metiendo min_H = 0 en '≤ min_H + ε' obtienes '≤ ε'."},
+ {g:"Ej.6",q:"Si A aprende H con éxito en agnóstico, ¿sirve el MISMO A para realizable?",o:["No, hay que rehacerlo","Sí, sin cambios: realizable es un subconjunto de casos","Solo si H es finita","Solo si ε=0"],c:1,e:"La garantía agnóstica vale para toda D, incluidas las realizables."},
+ {g:"Ej.6",q:"La clave del Ej. 6 es que el modelo agnóstico funciona para...",o:["Solo distribuciones sin ruido","TODAS las distribuciones D","Solo las realizables","Solo muestras grandes"],c:1,e:"Todas ⊇ realizables: quien puede con todas, puede con las realizables."},
+
+ {g:"Ej.7",q:"¿Qué hace el predictor de Bayes para cada dato x?",o:["Apuesta a la etiqueta más probable (1 si η(x) ≥ 1/2)","Siempre dice 1","Elige al azar","Copia la muestra"],c:0,e:"Le apuesta a lo más probable en cada x; por eso es imposible de superar."},
+ {g:"Ej.7",q:"¿Qué significa η(x)?",o:["El error empírico","P(Y=1 | X=x)","El tamaño de H","La confianza"],c:1,e:"η(x) es la probabilidad de que la etiqueta sea 1 dado ese x."},
+ {g:"Ej.7",q:"El mínimo error condicional posible en un punto x es...",o:["η(x)","1−η(x)","min{η(x), 1−η(x)}","0 siempre"],c:2,e:"Bayes logra exactamente ese mínimo apostando a lo más probable."},
+ {g:"Ej.7",q:"¿Por qué el error de Bayes puede ser mayor que 0?",o:["Por un error de cálculo","Por el ruido: mismo x puede tener distinta etiqueta","Porque H es pequeña","Porque falta muestra"],c:1,e:"La fracción menos probable de cada x se pierde inevitablemente."},
+ {g:"Ej.7",q:"Si η(x)=0.3, ¿qué predice Bayes en ese x y cuál es su error ahí?",o:["Predice 1, error 0.3","Predice 0, error 0.3","Predice 0, error 0.7","Predice 1, error 0.7"],c:1,e:"0.3 < 1/2 → predice 0; se equivoca cuando Y=1, que pasa con prob. 0.3."}
+];
+let answered=0,score=0,filter='all';
 const quizList=document.getElementById('quizList');
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function currentSet(){return QUIZ.map((q,i)=>({q,i})).filter(x=>filter==='all'||x.q.g===filter);}
 function renderQuiz(){
   quizList.innerHTML='';answered=0;score=0;
-  order=shuffle([...Array(QUIZ.length).keys()]);
-  order.forEach((qi,pos)=>{
-    const item=QUIZ[qi];
+  const set=shuffle(currentSet());
+  set.forEach((x,pos)=>{
+    const item=x.q;
     const d=document.createElement('div');d.className='card';
-    let opts='';item.o.forEach((op,oi)=>{opts+=`<button class="opt" data-q="${qi}" data-o="${oi}">${op}</button>`;});
-    d.innerHTML=`<h3>${pos+1}. ${item.q}</h3>${opts}<div class="explain" style="display:none"></div>`;
+    let opts='';item.o.forEach((op,oi)=>{opts+='<button class="opt" data-q="'+x.i+'" data-o="'+oi+'">'+op+'</button>';});
+    d.innerHTML='<span class="tag">'+item.g+'</span><h3>'+(pos+1)+'. '+item.q+'</h3>'+opts+'<div class="explain" style="display:none"></div>';
     quizList.appendChild(d);
   });
   quizList.querySelectorAll('.opt').forEach(btn=>btn.addEventListener('click',onAnswer));
-  updateScore();
-  document.getElementById('finalMsg').textContent='Responde todas para ver tu resultado.';
+  window.__total=set.length;updateScore();
+  document.getElementById('finalMsg').textContent='Responde para ver tu resultado.';
 }
 function onAnswer(e){
   const btn=e.currentTarget;const qi=+btn.dataset.q;const oi=+btn.dataset.o;
@@ -299,140 +325,99 @@ function onAnswer(e){
   if(card.dataset.done)return;
   card.dataset.done='1';answered++;
   const correct=QUIZ[qi].c;
-  card.querySelectorAll('.opt').forEach(b=>{
-    b.disabled=true;
-    if(+b.dataset.o===correct)b.classList.add('correct');
-  });
-  if(oi===correct){score++;}
-  else{btn.classList.add('wrong');}
-  const ex=card.querySelector('.explain');
-  ex.style.display='block';
+  card.querySelectorAll('.opt').forEach(b=>{b.disabled=true;if(+b.dataset.o===correct)b.classList.add('correct');});
+  if(oi===correct){score++;}else{btn.classList.add('wrong');}
+  const ex=card.querySelector('.explain');ex.style.display='block';
   ex.innerHTML=(oi===correct?'✅ ¡Correcto! ':'❌ Casi. ')+QUIZ[qi].e;
   updateScore();
-  if(answered===QUIZ.length){
-    const pct=Math.round(100*score/QUIZ.length);
-    let msg=pct>=85?'🏆 ¡Excelente, listo para el quiz!':pct>=60?'👍 Bien, repasa las que fallaste.':'📚 Vuelve a los Conceptos y reinténtalo.';
-    document.getElementById('finalMsg').textContent=`Resultado: ${score}/${QUIZ.length} (${pct}%). ${msg}`;
+  if(answered===window.__total){
+    const pct=Math.round(100*score/window.__total);
+    let msg=pct>=85?'🏆 ¡Excelente, listo para el quiz!':pct>=60?'👍 Bien, repasa las que fallaste.':'📚 Vuelve a Conceptos y reinténtalo.';
+    document.getElementById('finalMsg').textContent='Resultado: '+score+'/'+window.__total+' ('+pct+'%). '+msg;
   }
 }
 function updateScore(){
-  document.getElementById('scoreLbl').textContent=`Puntaje: ${score} / ${answered}`;
-  document.getElementById('progLbl').textContent=`${answered} / ${QUIZ.length} respondidas`;
-  document.getElementById('progBar').style.width=(100*answered/QUIZ.length)+'%';
+  document.getElementById('scoreLbl').textContent='Puntaje: '+score+' / '+answered;
+  document.getElementById('progLbl').textContent=answered+' / '+window.__total+' respondidas';
+  document.getElementById('progBar').style.width=(100*answered/window.__total)+'%';
 }
+document.querySelectorAll('.filterow button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.filterow button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');filter=b.dataset.f;renderQuiz();
+}));
 document.getElementById('resetQuiz').addEventListener('click',renderQuiz);
 renderQuiz();
 
-/* ---------------- SIMULADOR ---------------- */
+/* SIMULADOR */
 const FEAT=["Multijugador","Gratis","Acción"];
-let games=[
-  {f:[1,0,1],y:1},
-  {f:[1,0,0],y:1},
-  {f:[0,1,1],y:0}
-];
+let games=[{f:[1,0,1],y:1},{f:[1,0,0],y:1},{f:[0,1,1],y:0}];
 const body=document.getElementById('gamesBody');
 function renderGames(){
   body.innerHTML='';
   games.forEach((g,i)=>{
     const tr=document.createElement('tr');
-    let cells=`<td>${i+1}</td>`;
-    g.f.forEach((v,fi)=>{
-      cells+=`<td><input type="checkbox" class="chk" data-g="${i}" data-f="${fi}" ${v?'checked':''}></td>`;
-    });
-    cells+=`<td><select data-g="${i}" data-y="1">
-        <option value="1" ${g.y?'selected':''}>Sí 👍</option>
-        <option value="0" ${!g.y?'selected':''}>No 👎</option></select></td>`;
-    cells+=`<td><button class="btn ghost" data-del="${i}" style="padding:4px 10px">✕</button></td>`;
+    let cells='<td>'+(i+1)+'</td>';
+    g.f.forEach((v,fi)=>{cells+='<td><input type="checkbox" class="chk" data-g="'+i+'" data-f="'+fi+'" '+(v?'checked':'')+'></td>';});
+    cells+='<td><select data-g="'+i+'"><option value="1" '+(g.y?'selected':'')+'>Sí 👍</option><option value="0" '+(!g.y?'selected':'')+'>No 👎</option></select></td>';
+    cells+='<td><button class="btn ghost" data-del="'+i+'" style="padding:4px 10px">✕</button></td>';
     tr.innerHTML=cells;body.appendChild(tr);
   });
-  body.querySelectorAll('.chk').forEach(c=>c.addEventListener('change',e=>{
-    games[+e.target.dataset.g].f[+e.target.dataset.f]=e.target.checked?1:0;}));
-  body.querySelectorAll('select').forEach(s=>s.addEventListener('change',e=>{
-    games[+e.target.dataset.g].y=+e.target.value;}));
-  body.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',e=>{
-    games.splice(+e.target.dataset.del,1);renderGames();}));
+  body.querySelectorAll('.chk').forEach(c=>c.addEventListener('change',e=>{games[+e.target.dataset.g].f[+e.target.dataset.f]=e.target.checked?1:0;}));
+  body.querySelectorAll('select').forEach(s=>s.addEventListener('change',e=>{games[+e.target.dataset.g].y=+e.target.value;}));
+  body.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',e=>{games.splice(+e.target.dataset.del,1);renderGames();}));
 }
-document.getElementById('addGame').addEventListener('click',()=>{
-  games.push({f:[0,0,0],y:0});renderGames();});
+document.getElementById('addGame').addEventListener('click',()=>{games.push({f:[0,0,0],y:0});renderGames();});
 renderGames();
-
 document.getElementById('runSim').addEventListener('click',()=>{
-  // estado: para cada feature, {pos:bool, neg:bool}  (pos = literal x_i, neg = literal ¬x_i)
   let st=FEAT.map(()=>({pos:true,neg:true}));
   const log=[];
-  log.push(`<div><b>Inicio:</b> regla con los 6 literales (siempre dice "no me gusta"). Cubre a todos los negativos.</div>`);
+  log.push('<div><b>Inicio:</b> regla con los 6 literales (siempre dice "no me gusta"). Cubre a todos los negativos.</div>');
   games.forEach((g,i)=>{
-    if(g.y!==1){log.push(`<div>Juego ${i+1} (no te gustó) → se <b>ignora</b>.</div>`);return;}
+    if(g.y!==1){log.push('<div>Juego '+(i+1)+' (no te gustó) → se <b>ignora</b>.</div>');return;}
     let removed=[];
     g.f.forEach((v,fi)=>{
-      if(v===1 && st[fi].neg){st[fi].neg=false;removed.push(`¬${FEAT[fi]}`);}
-      if(v===0 && st[fi].pos){st[fi].pos=false;removed.push(`${FEAT[fi]}`);}
+      if(v===1&&st[fi].neg){st[fi].neg=false;removed.push('¬'+FEAT[fi]);}
+      if(v===0&&st[fi].pos){st[fi].pos=false;removed.push(FEAT[fi]);}
     });
-    log.push(`<div>Juego ${i+1} (te gustó) → borra: ${removed.length?removed.map(r=>`<span class="lit dead">${r}</span>`).join(' '):'<i>nada nuevo</i>'}</div>`);
+    log.push('<div>Juego '+(i+1)+' (te gustó) → borra: '+(removed.length?removed.map(r=>'<span class="lit dead">'+r+'</span>').join(' '):'<i>nada nuevo</i>')+'</div>');
   });
-  // estado final de literales
   let litHtml='<b>Literales que sobreviven:</b><br>';
-  st.forEach((s,fi)=>{
-    litHtml+=`<span class="lit ${s.pos?'alive':'dead'}">${FEAT[fi]}=sí</span>`;
-    litHtml+=`<span class="lit ${s.neg?'alive':'dead'}">${FEAT[fi]}=no</span>`;
-  });
+  st.forEach((s,fi)=>{litHtml+='<span class="lit '+(s.pos?'alive':'dead')+'">'+FEAT[fi]+'=sí</span><span class="lit '+(s.neg?'alive':'dead')+'">'+FEAT[fi]+'=no</span>';});
   document.getElementById('litState').innerHTML=litHtml;
   document.getElementById('stepLog').innerHTML=log.join('');
-  // regla final legible
   let conds=[],contradiction=false;
-  st.forEach((s,fi)=>{
-    if(s.pos&&s.neg)contradiction=true;      // pide sí y no a la vez
-    else if(s.pos)conds.push(`${FEAT[fi]} = sí`);
-    else if(s.neg)conds.push(`${FEAT[fi]} = no`);
-  });
+  st.forEach((s,fi)=>{if(s.pos&&s.neg)contradiction=true;else if(s.pos)conds.push(FEAT[fi]+' = sí');else if(s.neg)conds.push(FEAT[fi]+' = no');});
   let ruleTxt;
-  if(contradiction)ruleTxt='Regla = siempre "no me gusta" (quedó una contradicción: no hubo ejemplos positivos suficientes).';
-  else if(conds.length===0)ruleTxt='Regla = siempre "me gusta" (conjunción vacía, sin condiciones).';
+  if(contradiction)ruleTxt='Regla = siempre "no me gusta" (contradicción: no hubo positivos suficientes).';
+  else if(conds.length===0)ruleTxt='Regla = siempre "me gusta" (conjunción vacía).';
   else ruleTxt='Regla aprendida: me gusta si '+conds.join(' Y ');
   document.getElementById('finalRule').textContent='✔ '+ruleTxt;
-  // chequeo de consistencia
-  const predict=(g)=>{
-    if(contradiction)return 0;
-    for(let fi=0;fi<FEAT.length;fi++){
-      if(st[fi].pos && g.f[fi]!==1)return 0;
-      if(st[fi].neg && g.f[fi]!==0)return 0;
-    }
-    return 1;
-  };
+  const predict=(g)=>{if(contradiction)return 0;for(let fi=0;fi<FEAT.length;fi++){if(st[fi].pos&&g.f[fi]!==1)return 0;if(st[fi].neg&&g.f[fi]!==0)return 0;}return 1;};
   let ok=0;let rows='';
-  games.forEach((g,i)=>{
-    const p=predict(g);const good=p===g.y;if(good)ok++;
-    rows+=`<div>Juego ${i+1}: predice <b>${p?'me gusta':'no'}</b>, real <b>${g.y?'me gusta':'no'}</b> ${good?'✅':'❌'}</div>`;
-  });
+  games.forEach((g,i)=>{const p=predict(g);const good=p===g.y;if(good)ok++;rows+='<div>Juego '+(i+1)+': predice <b>'+(p?'me gusta':'no')+'</b>, real <b>'+(g.y?'me gusta':'no')+'</b> '+(good?'✅':'❌')+'</div>';});
   const allok=ok===games.length;
-  document.getElementById('consistency').innerHTML=
-    `<div class="${allok?'tip':'warn'}"><b>Consistencia con la muestra: ${ok}/${games.length} ${allok?'— ¡0 errores! (esto es lo que hace ERM en el caso realizable)':'— hay errores: los datos no son realizables por una conjunción'}</b></div>`+
-    `<div class="steplog">${rows}</div>`;
+  document.getElementById('consistency').innerHTML='<div class="'+(allok?'tip':'warn')+'"><b>Consistencia con la muestra: '+ok+'/'+games.length+' '+(allok?'— ¡0 errores! (esto hace ERM en el caso realizable)':'— hay errores: los datos no son realizables por una conjunción')+'</b></div><div class="steplog">'+rows+'</div>';
   document.getElementById('simOut').style.display='block';
   document.getElementById('simOut').scrollIntoView({behavior:'smooth',block:'nearest'});
 });
 
-/* ---------------- ERRORES COMUNES ---------------- */
+/* ERRORES */
 const ERR=[
- {t:"\"No puedo calcular L_D porque no sé el tamaño de la población\"",
-  f:"El obstáculo no es el tamaño, es que <b>no conoces D</b> (las probabilidades del mundo). Aunque supieras cuántos datos hay, sin conocer sus probabilidades y etiquetas no puedes calcular el riesgo verdadero."},
- {t:"Contar conjunciones: 3 × 3 = 9",
-  f:"Son 3 opciones <b>por cada</b> variable, y hay d variables: se multiplica d veces. Con d=3 → 3×3×3 = <b>27</b>, no 9. En general <b>3^d</b>."},
- {t:"3⁵ = 241",
-  f:"3⁵ = 3×3×3×3×3 = <b>243</b>. (9 → 27 → 81 → 243.)"},
- {t:"La promesa PAC \"es que existe una hipótesis buena\"",
-  f:"No. La promesa habla de <b>la regla que aprendes</b>: con prob. ≥ 1−δ, esa regla tiene error ≤ ε. Siempre menciona sus <b>dos partes</b> (1−δ y ε)."},
- {t:"Confundir ε con δ",
-  f:"<b>ε</b> = precisión (cuánto error tolero). <b>δ</b> = probabilidad de mala suerte con la muestra (confianza = 1−δ). Más de cualquiera de los dos → necesitas más datos."},
- {t:"\"El mismo algoritmo agnóstico no tiene por qué servir para realizable\"",
-  f:"Sí sirve: una situación realizable es un <b>caso particular</b> de una agnóstica (una donde min_H = 0). Como la garantía agnóstica vale para <b>toda</b> D, vale también para esas, y ahí se vuelve error ≤ ε."},
- {t:"Confundir Bayes con el mejor de H",
-  f:"<b>Bayes</b> = el mejor de <i>todas</i> las reglas del universo. <b>min_H</b> = el mejor <i>dentro de tu bolsa H</i>. Siempre Bayes ≤ min_H; la diferencia es el precio de limitarte a H."}
+ {t:"\"No puedo calcular L_D porque no sé el tamaño de la población\"",f:"El obstáculo no es el tamaño, es que <b>no conoces D</b> (las probabilidades del mundo). Aunque supieras cuántos datos hay, sin sus probabilidades y etiquetas no puedes calcular el riesgo verdadero."},
+ {t:"Contar conjunciones: 3 × 3 = 9",f:"Son 3 opciones <b>por cada</b> variable, y hay d variables. Con d=3 → 3×3×3 = <b>27</b>. En general <b>3^d</b>."},
+ {t:"3⁵ = 241",f:"3⁵ = 3×3×3×3×3 = <b>243</b>. (9 → 27 → 81 → 243.)"},
+ {t:"La promesa PAC \"es que existe una hipótesis buena\"",f:"No. Habla de <b>la regla que aprendes</b>: con prob. ≥ 1−δ, esa regla tiene error ≤ ε. Siempre sus <b>dos partes</b> (1−δ y ε)."},
+ {t:"Confundir ε con δ",f:"<b>ε</b> = precisión (cuánto error tolero). <b>δ</b> = prob. de mala suerte (confianza = 1−δ). Más de cualquiera → más datos."},
+ {t:"\"Más precisión = menos datos\"",f:"Al revés: pedir más precisión (ε más pequeño) o más confianza (δ más pequeño) <b>nunca reduce</b> la muestra — la mantiene o la sube (Ej. 1: monotonicidad)."},
+ {t:"\"El mismo algoritmo agnóstico no sirve para realizable\"",f:"Sí sirve: realizable es un <b>caso particular</b> de agnóstico (min_H = 0). La garantía agnóstica vale para <b>toda</b> D, y ahí se vuelve error ≤ ε."},
+ {t:"\"La complejidad del singleton depende de |X|\"",f:"No. Es <b>m ≥ ln(1/δ)/ε</b>: depende solo de ε y δ. ¡Funciona aunque X sea infinito!"},
+ {t:"Confundir Bayes con el mejor de H",f:"<b>Bayes</b> = el mejor de <i>todas</i> las reglas. <b>min_H</b> = el mejor <i>dentro de H</i>. Siempre Bayes ≤ min_H; la diferencia es el precio de limitarte a H."},
+ {t:"Creer que el error de Bayes siempre es 0",f:"Puede ser <b>&gt; 0</b> por el <b>ruido</b> (mismo x con distinta etiqueta). Es el mínimo posible, pero no tiene que ser cero."}
 ];
 const el=document.getElementById('errList');
 ERR.forEach(x=>{
   const d=document.createElement('div');d.className='card accordion';
-  d.innerHTML=`<h3><span>❌ ${x.t}</span><span class="chev">▶</span></h3><div class="body"><div class="tip" style="margin-top:12px">✅ ${x.f}</div></div>`;
+  d.innerHTML='<h3><span>❌ '+x.t+'</span><span class="chev">▶</span></h3><div class="body"><div class="tip" style="margin-top:12px">✅ '+x.f+'</div></div>';
   d.querySelector('h3').addEventListener('click',()=>d.classList.toggle('open'));
   el.appendChild(d);
 });
